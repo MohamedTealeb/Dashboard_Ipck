@@ -9,9 +9,11 @@ export default function Sidebar() {
     const toggleSidenav = () => {
       setSidenav(!sidenav);
     };
+    
+    
   
   return <>
-  <div className="font-poppins relative block antialiased">
+  <div className="font-poppins fixed block antialiased">
     <div
       id="view" 
       className="h-full w-screen flex flex-row"
