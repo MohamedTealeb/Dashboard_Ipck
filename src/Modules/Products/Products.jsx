@@ -21,24 +21,12 @@ export default function Products() {
   }));
 
   return <>
-    <div className='min-h-screen  flex space-y-5'>
+    <div className='min-h-screen  space-y-20 flex '>
       <Sidebar onSidebarChange={setSidebarOpen} />
       <div className=' '>
-      {/* <Box sx={{ flexGrow: 1, p: 3 }}>
+      
 
-        <Grid  container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{marginBottom:'10px'}}>
-          {Array.from(Array(6)).map((_, index) => (
-            <Grid item xs={2} sm={4} md={4} key={index}>
-              <Item>
-                <img src={logo} alt="Product" style={{ maxWidth: '100%', height: 'auto'  }} className='cursor-pointer ' />
-              </Item>
-            </Grid>
-          ))}
-        </Grid>
-      </Box> */}
-     
-
-                    <div class="grid grid-cols-1 gap-8 mt-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                    <div class="grid grid-cols-1 gap-8    md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
                       
 
                         <div class="flex flex-col items-center justify-center w-full max-w-lg mx-auto">
