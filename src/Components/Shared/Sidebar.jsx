@@ -24,6 +24,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const drawerWidth = 240;
 
@@ -54,12 +55,14 @@ const AppBar = styled(MuiAppBar, {
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: `${drawerWidth}px`,
+      transition: theme.transitions.create(['margin', 'width'], {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+    }
   }),
 }));
 
@@ -84,6 +87,15 @@ export default function Sidebar({ onSidebarChange }) {
   const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  React.useEffect(() => {
+    // Close drawer by default on mobile
+    if (isMobile) {
+      setOpen(false);
+      onSidebarChange(false);
+    }
+  }, [isMobile, onSidebarChange]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -95,84 +107,139 @@ export default function Sidebar({ onSidebarChange }) {
     onSidebarChange(false);
   };
 
+  const handleItemClick = (path) => {
+    navigate(path);
+    if (isMobile) {
+      handleDrawerClose();
+    }
+  };
+
+  const drawerContent = (
+    <>
+      <DrawerHeader>
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', px: 2 }}>
+          <Avatar
+            alt="Admin"
+            src={logo}
+            sx={{ width: 40, height: 40, mr: 2 }}
+          />
+          <Typography variant="subtitle1" sx={{ color: 'white', fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+            Administrator
+          </Typography>
+        </Box>
+        <IconButton onClick={handleDrawerClose} sx={{ color: 'white' }}>
+          {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+        </IconButton>
+      </DrawerHeader>
+      <Divider sx={{ bgcolor: 'rgba(255, 255, 255, 0.2)' }} />
+      <List>
+        {menuItems.map((item) => (
+          <ListItem key={item.text} disablePadding>
+            <ListItemButton
+              onClick={() => handleItemClick(item.path)}
+              selected={location.pathname === item.path}
+              sx={{
+                color: 'white',
+                py: { xs: 1.5, sm: 2 }, // Taller touch targets on mobile
+                '&.Mui-selected': {
+                  bgcolor: 'black',
+                  color: 'white',
+                  '&:hover': {
+                    bgcolor: 'white',
+                    color: 'black',
+                  },
+                },
+                '&:hover': {
+                  bgcolor: 'black',
+                  color: 'white',
+                },
+              }}
+            >
+              <ListItemIcon sx={{ color: 'inherit', minWidth: { xs: 40, sm: 56 } }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText 
+                primary={item.text} 
+                sx={{
+                  '& .MuiTypography-root': {
+                    fontSize: { xs: '0.9rem', sm: '1rem' }
+                  }
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </>
+  );
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ bgcolor: 'white', color: '#046584'}}>
-        <Toolbar>
+      <AppBar 
+        position="fixed" 
+        open={open} 
+        sx={{ 
+          bgcolor: 'white', 
+          color: '#046584',
+          boxShadow: 1
+        }}
+      >
+        <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            sx={{ mr: 2, ...(open && { display: 'none' }) }}
+            sx={{ 
+              mr: 2, 
+              ...(open && { display: { sm: 'none' } }),
+              padding: { xs: 1, sm: 1.5 }
+            }}
           >
             <MenuIcon />
           </IconButton>
-        
         </Toolbar>
       </AppBar>
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
+
+      {isMobile ? (
+        <Drawer
+          variant="temporary"
+          anchor="left"
+          open={open}
+          onClose={handleDrawerClose}
+          sx={{
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+              bgcolor: '#046584',
+            },
+          }}
+          ModalProps={{
+            keepMounted: true, // Better mobile performance
+          }}
+        >
+          {drawerContent}
+        </Drawer>
+      ) : (
+        <Drawer
+          sx={{
             width: drawerWidth,
-            boxSizing: 'border-box',
-            bgcolor: '#046584',
-          },
-        }}
-        variant="persistent"
-        anchor="left"
-        open={open}
-      >
-        <DrawerHeader>
-          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', px: 2 }}>
-            <Avatar
-              alt="Admin"
-              src={logo}
-              sx={{ width: 40, height: 40, mr: 2 }}
-            />
-            <Typography variant="subtitle1" sx={{ color: 'white' }}>
-              Administrator
-            </Typography>
-          </Box>
-          <IconButton onClick={handleDrawerClose} sx={{ color: 'white' }}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider sx={{ bgcolor: 'rgba(255, 255, 255, 0.2)' }} />
-        <List>
-          {menuItems.map((item) => (
-            <ListItem key={item.text} disablePadding>
-              <ListItemButton
-                onClick={() => navigate(item.path)}
-                selected={location.pathname === item.path}
-                sx={{
-                  color: 'white',
-                  '&.Mui-selected': {
-                    bgcolor: 'black',
-                    color: 'white',
-                    '&:hover': {
-                      bgcolor: 'white',
-                      color: 'black',
-                    },
-                  },
-                  '&:hover': {
-                    bgcolor: 'black',
-                    color: 'white',
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ color: 'inherit' }}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+              bgcolor: '#046584',
+            },
+          }}
+          variant="persistent"
+          anchor="left"
+          open={open}
+        >
+          {drawerContent}
+        </Drawer>
+      )}
+      
       <Main open={open}>
         <DrawerHeader />
       </Main>
