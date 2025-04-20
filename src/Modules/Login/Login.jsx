@@ -5,9 +5,9 @@ export default function Login() {
   return <>
   
   
-<div class="min-h-screen bg-secondary flex flex-col justify-center sm:py-12">
+<div class="min-h-screen bg-[#046584] flex flex-col justify-center sm:py-12">
   <div class=" xs:p-0 mx-auto md:w-full md:max-w-md">
-    <img className=' mx-auto rounded-2xl' src={logo} alt="" />
+    <img className=' mx-auto rounded-2xl'style={{width:'150px',height:'125px'}} src={logo} alt="" />
     <div class="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
       <div class="px-5 py-7">
         <label class="font-semibold text-sm text-black pb-1 block">E-mail</label>

@@ -153,6 +153,9 @@ export default function Home() {
             disableRowSelectionOnClick
             sx={{
               border: 0,
+              display:'flex'
+             
+              ,
               '& .MuiDataGrid-row:hover': {
                 backgroundColor: '#046584',
                 color: 'white'
