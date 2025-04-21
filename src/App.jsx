@@ -1,11 +1,11 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Home from './Components/Shared/Home'
 import Login from './Modules/Login/Login'
 import Products from './Modules/Products/Products'
 import Admin from './Modules/Admin/Admin'
 import Users from './Modules/Users/Users'
 import Verify from './Modules/Verfiy/Verify'
+import Home from './Modules/Home/Home';
 
 export default function App() {
   return <>

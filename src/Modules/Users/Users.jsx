@@ -295,8 +295,11 @@ export default function Users() {
               pagination: { paginationModel: { pageSize: 5 } },
             }}
             pageSizeOptions={[5, 10, 25]}
+            autoHeight
             sx={{
               border: 0,
+              height: '100%',
+              width: '100%',
               '& .MuiDataGrid-cell': {
                 padding: { xs: '8px 4px', sm: '16px' },
                 fontSize: { xs: '0.875rem', sm: '1rem' }
