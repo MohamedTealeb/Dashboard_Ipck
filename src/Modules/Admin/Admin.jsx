@@ -41,7 +41,10 @@ export default function Admin() {
             sx={{
               
               transition: 'margin-left 0.3s',
-              marginLeft: sidebarOpen ? '240px' : '64px',
+              marginLeft: sidebarOpen ? '80px' : '64px',
+              overflow:'hidden',
+              marginTop: sidebarOpen?'35px':'35px'
+              ,
               [theme.breakpoints.down('sm')]: {
                 marginLeft: 0,
                 padding: 2
@@ -53,10 +56,15 @@ export default function Admin() {
             }}
           >
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-              <Typography variant="h4">Admin Management</Typography>
+              <Typography variant="h4" className='text-[#046584]'>Admin Management</Typography>
               <Button 
                 variant="contained" 
-                color="primary" 
+                sx={{ 
+                  backgroundColor: '#046584',
+                  '&:hover': {
+                    backgroundColor: '#03506e'
+                  }
+                }}
                 onClick={() => setOpen(true)}
                 size={isMobile ? "small" : "medium"}
               >
@@ -104,7 +112,7 @@ export default function Admin() {
                 }
               }}
             >
-              <DialogTitle>Add New Admin</DialogTitle>
+              <DialogTitle >Add New Admin </DialogTitle>
               <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
                 <TextField 
                   label="Name" 
@@ -133,7 +141,7 @@ export default function Admin() {
               </DialogContent>
               <DialogActions>
                 <Button onClick={() => setOpen(false)} size={isMobile ? "small" : "medium"}>Cancel</Button>
-                <Button variant="contained" onClick={handleAdd} size={isMobile ? "small" : "medium"}>Add</Button>
+                <Button variant="contained"  onClick={handleAdd} size={isMobile ? "small" : "medium"}>Add</Button>
               </DialogActions>
             </Dialog>
           </Box>

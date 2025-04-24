@@ -145,6 +145,7 @@ export default function Products() {
           p={isMobile ? 2 : 4} 
           sx={{ 
             flexGrow: 1,
+            marginTop:sidebarOpen?'35px':'35px',
             width: '100%',
             overflow: 'auto'
           }}
