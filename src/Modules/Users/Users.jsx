@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../Components/Shared/Sidebar";
 import { Box, Button, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -12,6 +12,7 @@ import {
   GridRowModes,
   GridActionsCellItem,
 } from "@mui/x-data-grid";
+import axios from "axios";
 
 // Helper function to create a formatted date string
 const formatDate = (date) => {
@@ -24,6 +25,29 @@ const formatDate = (date) => {
 
 export default function Users() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [user, setuser] = useState([]);
+  
+  async function GetallUser(user) {
+    setErrorMsg("");
+    try {
+    const{data}=   await axios.get(`${import.meta.env.VITE_BASEURL}/users`);
+    
+      setuser(data.data)
+      console.log(data);
+      
+       
+      
+        
+
+      return response.data;
+    } catch (err) {
+        setErrorMsg(
+            err.response?.data?.message || "An unexpected error occurred."
+        );
+    }
+}useEffect(() => {
+  GetallUser();
+}, []);
   const [rows, setRows] = useState([
     {
       id: 1,

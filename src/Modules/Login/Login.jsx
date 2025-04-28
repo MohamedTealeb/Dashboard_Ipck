@@ -1,50 +1,128 @@
-import React from 'react'
-import logo from'../../assets/304305481_470478301760187_6739104333513463181_n.jpg'
-import { Link } from 'react-router-dom'
+
+
+import React, { useState } from 'react';
+import logo from '../../assets/304305481_470478301760187_6739104333513463181_n.jpg';
+import { useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import axios from 'axios';
+
 export default function Login() {
-  return <>
+    const navigate = useNavigate();
+    const [errorMsg, setErrorMsg] = useState("");
   
-  
-<div class="min-h-screen bg-[#046584] flex flex-col justify-center sm:py-12">
-  <div class=" xs:p-0 mx-auto md:w-full md:max-w-md">
-    <img className=' mx-auto rounded-2xl'style={{width:'150px',height:'125px'}} src={logo} alt="" />
-    <div class="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
-      <div class="px-5 py-7">
-        <label class="font-semibold text-sm text-black pb-1 block">E-mail</label>
-        <input type="text" class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" />
-        <label class="font-semibold text-sm text-black pb-1 block">Password</label>
-        <input type="text" class="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" />
-        <button type="button" class="transition duration-200 bg-white text-black hover:bg-black focus:bg-black focus:shadow-sm focus:ring-4 focus:text-white focus:ring-black focus:ring-opacity-50 hover:text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block">
-           <Link to={'/home'}> <span class="inline-block mr-2">Login</span> </Link> 
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4 inline-block">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-        </button>
-      </div>
-      <div class="py-5">
-        <div class="grid grid-cols-2 gap-1">
-          <div class="text-center sm:text-left whitespace-nowrap">
-            <button class="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4 inline-block align-text-top">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                </svg>
-                <span class="inline-block ml-1">Forgot Password</span>
-            </button>
-          </div>
-          <div class="text-center sm:text-right  whitespace-nowrap">
-            <button class="transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4 inline-block align-text-bottom	">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-                <span class="inline-block ml-1">Help</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-  </div>
-</div>
-  
-  </>
+    async function LoginNewUser(user) {
+        setErrorMsg("");
+        try {
+        const{data}=   await axios.post(`${import.meta.env.VITE_BASEURL}/auth/login`, user);
+          
+            localStorage.setItem("token",data.access_token);
+          
+            
+
+            if (window.location.pathname === "/") {
+                navigate("/home");
+            } else {
+                navigate(window.location.pathname);
+            }
+        } catch (err) {
+            setErrorMsg(
+                err.response?.data?.message || "An unexpected error occurred."
+            );
+        }
+    }
+
+    const formik = useFormik({
+        initialValues: {
+            email: "",
+            password: "",
+        },
+        onSubmit: (values) => {
+            LoginNewUser(values);
+        },
+        validate: (values) => {
+            let errors = {};
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(values.email)) {
+                errors.email = "Email must be valid.";
+            }
+
+            if (values.password.length < 6 || values.password.length > 12) {
+                errors.password = "Password must be between 6 and 12 characters.";
+            }
+
+            return errors;
+        },
+    });
+
+    return (
+        <form onSubmit={formik.handleSubmit}>
+            <div className="min-h-screen bg-[#046584] flex flex-col justify-center sm:py-12">
+                <div className="xs:p-0 mx-auto md:w-full md:max-w-md">
+                    <img
+                        className="mx-auto rounded-2xl"
+                        style={{ width: '150px', height: '125px' }}
+                        src={logo}
+                        alt="Logo"
+                    />
+                    <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
+                        <div className="px-5 py-7">
+                            <label className="font-semibold text-sm text-black pb-1 block">E-mail</label>
+                            <input
+                                type="email"
+                                name="email"
+                                className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
+                                onBlur={formik.handleBlur}
+                                onChange={formik.handleChange}
+                                value={formik.values.email}
+                            />
+                            {formik.errors.email && formik.touched.email && (
+                                <div className="alert text-red-600 text-center mb-2">
+                                    {formik.errors.email}
+                                </div>
+                            )}
+
+                            <label className="font-semibold text-sm text-black pb-1 block">Password</label>
+                            <input
+                                type="password"
+                                name="password"
+                                className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
+                                onBlur={formik.handleBlur}
+                                onChange={formik.handleChange}
+                                value={formik.values.password}
+                            />
+                            {formik.errors.password && formik.touched.password && (
+                                <div className="alert text-red-600 text-center mb-2">
+                                    {formik.errors.password}
+                                </div>
+                            )}
+
+                            {errorMsg && (
+                                <div className="alert text-red-600 text-center mb-4">
+                                    {errorMsg}
+                                </div>
+                            )}
+
+                            <button
+                                type="submit"
+                                className="transition duration-200 bg-white text-black hover:cursor-pointer hover:bg-black focus:bg-black focus:shadow-sm focus:ring-4 focus:text-white focus:ring-black focus:ring-opacity-50 hover:text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block"
+                            >
+                                <span className="inline-block mr-2">Login</span>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    className="w-4 h-4 inline-block"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    );
 }
+
