@@ -15,16 +15,18 @@ export default function Login() {
         try {
         const{data}=   await axios.post(`${import.meta.env.VITE_BASEURL}/auth/login`, user);
           
-            localStorage.setItem("token",data.access_token);
-          
-            
+        if (data.user.role === 'admin') {
+            localStorage.setItem("token", data.access_token);
 
             if (window.location.pathname === "/") {
                 navigate("/home");
             } else {
                 navigate(window.location.pathname);
             }
-        } catch (err) {
+        } else {
+            setErrorMsg("You are not authorized to access the admin area.");
+        }
+         } catch (err) {
             setErrorMsg(
                 err.response?.data?.message || "An unexpected error occurred."
             );
