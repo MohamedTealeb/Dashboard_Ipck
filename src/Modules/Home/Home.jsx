@@ -12,6 +12,7 @@ export default function Home() {
     <div className='min-h-screen flex'>
       
       <Sidebar onSidebarChange={setSidebarOpen} />
+        
       <Table />
       
       

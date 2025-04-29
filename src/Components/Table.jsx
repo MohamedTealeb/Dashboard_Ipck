@@ -87,7 +87,7 @@ export default function Table() {
         },
       }}
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
         <div className="bg-[#3c8dad] text-white rounded-lg shadow-lg flex flex-col items-center p-4 sm:p-8">
           <div className="text-xl sm:text-2xl">
             <svg
@@ -164,7 +164,7 @@ export default function Table() {
             height: '100%',
             '& .MuiDataGrid-row:hover': {
               backgroundColor: '#046584',
-              color: 'white',
+              color: 'black',
             },
             '& .MuiDataGrid-cell': {
               padding: {
