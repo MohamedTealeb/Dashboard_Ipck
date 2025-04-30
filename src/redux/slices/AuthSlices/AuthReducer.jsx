@@ -15,7 +15,7 @@ const authSlice = createSlice({
    accept: (state) => {
     const token =localStorage.getItem("token");
         if (data.user.role === 'admin') {
-            localStorage.setItem("token", data.token);
+            localStorage.setItem("token", token);
     
             if (window.location.pathname === "/") {
                 navigate("/home");

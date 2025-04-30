@@ -11,17 +11,14 @@ export default function Table() {
   const [sidebarOpen, setSidebarOpen] = useState(true); // Keep if sidebar is used elsewhere
   // const [users, setUsers] = useState([]);
   // const [isLoading, setIsLoading] = useState(false); // Added loading state
-  const { allUsers: users, loading: isLoading, error} = useSelector((state) => state.user);
-  // const [error, setError] = useState(null); // Added error state
- let x= useSelector(store=>store.users)
+  const { allUsers: users = [], loading: isLoading, error } = useSelector((state) => state.user || {}); let x= useSelector(store=>store.users)
 console.log(x);
 
+const dispatch = useDispatch();
 
-let dispatch = useDispatch(
-  useEffect(() => {
-    dispatch(getAllUsers);
-  }, [])
-);
+useEffect(() => {
+  dispatch(getAllUsers());
+}, [dispatch]);
   // Pagination state
   const [paginationModel, setPaginationModel] = useState({
     page: 0,

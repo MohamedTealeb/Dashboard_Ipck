@@ -20,12 +20,16 @@ export default function Login() {
             email: "",
             password: "",
         },
-        onSubmit: (values) => {
-            dispatch(loginUser(values));
-            if (isAuthinticated){
-                navigate("/home")
+        onSubmit: async (values) => {
+            try {
+                const result = await dispatch(loginUser(values)).unwrap();
+                localStorage.setItem("token", result.token);
+                navigate("/home");
+            } catch (error) {
+                setErrorMsg("Invalid email or password");
             }
-        },
+        }
+        ,
         validate: (values) => {
             let errors = {};
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
