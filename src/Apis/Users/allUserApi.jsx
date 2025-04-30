@@ -14,11 +14,11 @@ export const getAllUsers = createAsyncThunk(
         )
       );
 
-      const response = await axios.get(`${import.meta.env.VITE_BASEURL}/api/users`, {
+      const response = await axios.get(`${import.meta.env.VITE_BASEURL}/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        params: filteredParams,
+      
       });
 
       return response.data;

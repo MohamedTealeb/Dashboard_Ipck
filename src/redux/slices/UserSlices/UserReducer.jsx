@@ -5,9 +5,8 @@ const userSlice = createSlice({
     "name": "userslice",
     initialState: {
         allUsers: [],
-        totalUsers: 0,
-        loading: false,
-        error: null
+      
+     
     },
     extraReducers: (builder) => {
         builder

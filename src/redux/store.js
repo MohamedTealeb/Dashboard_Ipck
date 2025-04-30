@@ -1,22 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { Navigate } from "react-router-dom";
 import authReducer from "../redux/slices/AuthSlices/AuthReducer.jsx";
-import userReducer  from "./slices/UserSlices/UserReducer";
-
-
-
-
-
-
-
-
-
-
-const store =configureStore({
-    reducer:{
-  auth:authReducer,
-  user:userReducer,
-    }
+import userSlice from "./slices/UserSlices/UserReducer";
+const store = configureStore({
+  reducer: {
+    auth: authReducer,
+    user: userSlice,
+  },
 });
 // (function initalizedAuth(){
 //     const token =localStorage.getItem("token");
@@ -32,7 +22,5 @@ const store =configureStore({
 //         setErrorMsg("You are not authorized to access the admin area.");
 //     }
 // })()
-
-
 
 export default store;

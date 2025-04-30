@@ -3,47 +3,25 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Paper, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllUsers } from '../Apis/Users/allUserApi';
+import store from '../redux/store';
 
 export default function Table() {
   const [sidebarOpen, setSidebarOpen] = useState(true); // Keep if sidebar is used elsewhere
-  const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(false); // Added loading state
-  const [error, setError] = useState(null); // Added error state
+  // const [users, setUsers] = useState([]);
+  // const [isLoading, setIsLoading] = useState(false); // Added loading state
+  const { allUsers: users, loading: isLoading, error} = useSelector((state) => state.user);
+  // const [error, setError] = useState(null); // Added error state
+ let x= useSelector(store=>store.users)
+console.log(x);
 
-  // Fetch all users
-  async function getAllUsers() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setError('No authentication token found. Please log in.');
-      return;
-    }
 
-    setIsLoading(true);
-    setError(null);
-    try {
-      const { data } = await axios.get(`${import.meta.env.VITE_BASEURL}/users`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (Array.isArray(data)) {
-        setUsers(data);
-      } else {
-        setError('Invalid data format from server.');
-      }
-    } catch (err) {
-      setError('Failed to fetch users. Please try again.');
-      console.error('Error fetching users:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  // Fetch users on component mount
+let dispatch = useDispatch(
   useEffect(() => {
-    getAllUsers();
-  }, []);
-
+    dispatch(getAllUsers);
+  }, [])
+);
   // Pagination state
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -59,7 +37,7 @@ export default function Table() {
   ];
 
   // Map users to rows
-  const rows = users.map((user) => ({
+  const rows = (users || []).map((user) =>  ({
     id: user.id,
     email: user.email,
     role: user.role,

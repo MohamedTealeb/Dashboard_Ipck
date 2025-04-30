@@ -12,6 +12,8 @@ export default function Login() {
     const navigate = useNavigate();
     const [errorMsg, setErrorMsg] = useState("");
     const dispatch = useDispatch();
+    const isAuthinticated = !!localStorage.getItem("token");
+
  
     const formik = useFormik({
         initialValues: {
@@ -19,7 +21,10 @@ export default function Login() {
             password: "",
         },
         onSubmit: (values) => {
-            loginUser(values);
+            dispatch(loginUser(values));
+            if (isAuthinticated){
+                navigate("/home")
+            }
         },
         validate: (values) => {
             let errors = {};
