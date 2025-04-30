@@ -4,42 +4,22 @@ import React, { useState } from 'react';
 import logo from '../../assets/304305481_470478301760187_6739104333513463181_n.jpg';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
-import axios from 'axios';
+
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../Apis/LoginApi/LoginApi";
 
 export default function Login() {
     const navigate = useNavigate();
     const [errorMsg, setErrorMsg] = useState("");
-  
-    async function LoginNewUser(user) {
-        setErrorMsg("");
-        try {
-        const{data}=   await axios.post(`${import.meta.env.VITE_BASEURL}/auth/login`, user);
-          
-        if (data.user.role === 'admin') {
-            localStorage.setItem("token", data.access_token);
-
-            if (window.location.pathname === "/") {
-                navigate("/home");
-            } else {
-                navigate(window.location.pathname);
-            }
-        } else {
-            setErrorMsg("You are not authorized to access the admin area.");
-        }
-         } catch (err) {
-            setErrorMsg(
-                err.response?.data?.message || "An unexpected error occurred."
-            );
-        }
-    }
-
+    const dispatch = useDispatch();
+ 
     const formik = useFormik({
         initialValues: {
             email: "",
             password: "",
         },
         onSubmit: (values) => {
-            LoginNewUser(values);
+            loginUser(values);
         },
         validate: (values) => {
             let errors = {};
