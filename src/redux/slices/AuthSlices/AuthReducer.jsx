@@ -1,32 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { loginUser } from "./../../../Apis/LoginApi/LoginApi";
 
-
-
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    
     token: null,
     loading: false,
     error: null,
-  },
-  reducers: {
-   accept: (state) => {
-    const token =localStorage.getItem("token");
-        if (data.user.role === 'admin') {
-            localStorage.setItem("token", token);
-    
-            if (window.location.pathname === "/") {
-                navigate("/home");
-            } else {
-                Navigate(window.location.pathname);
-            }
-        } else {
-            setErrorMsg("You are not authorized to access the admin area.");
-        }
-    },
-    
   },
   extraReducers: (builder) => {
     builder
@@ -37,10 +17,8 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
-        const token = action.payload.token;
-        state.token = token;
-        localStorage.setItem("token", token);
-      
+         state.token = action.payload.access_token;
+        localStorage.setItem("token", state.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -48,6 +26,5 @@ const authSlice = createSlice({
       });
   },
 });
-
 
 export default authSlice.reducer;

@@ -78,7 +78,7 @@ const menuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/home' },
   { text: 'Products', icon: <InventoryIcon />, path: '/products' },
   { text: 'Admin', icon: <AdminPanelSettingsIcon />, path: '/admin' },
-  { text: 'Users', icon: <PeopleIcon />, path: '/users' },
+  
   { text: 'Verify', icon: <VerifiedUserIcon />, path: '/verify' },
 ];
 

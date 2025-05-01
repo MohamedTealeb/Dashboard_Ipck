@@ -140,7 +140,7 @@ export default function Products() {
   return (
     <>
       <div className='min-h-screen flex'>
-        <Sidebar onSidebarChange={setSidebarOpen} />
+ 
         <Box 
           p={isMobile ? 2 : 4} 
           sx={{ 

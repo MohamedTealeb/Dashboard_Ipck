@@ -1,7 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { Navigate } from "react-router-dom";
 import authReducer from "../redux/slices/AuthSlices/AuthReducer.jsx";
-import userReducer from "../redux/slices/UserSlices/UserReducer";const store = configureStore({
+import userReducer from "../redux/slices/UserSlices/UserReducer";
+const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,

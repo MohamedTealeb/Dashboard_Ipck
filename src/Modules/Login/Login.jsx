@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import logo from '../../assets/304305481_470478301760187_6739104333513463181_n.jpg';
 import { useNavigate } from 'react-router-dom';
@@ -23,8 +21,12 @@ export default function Login() {
         onSubmit: async (values) => {
             try {
                 const result = await dispatch(loginUser(values)).unwrap();
-                localStorage.setItem("token", result.token);
-                navigate("/home");
+                if(result.user.role==="user"){
+                    navigate('/home')
+                }else {
+                    setErrorMsg("You are not authorized to access the admin area.");
+                }
+
             } catch (error) {
                 setErrorMsg("Invalid email or password");
             }
@@ -90,7 +92,7 @@ export default function Login() {
 
                             {errorMsg && (
                                 <div className="alert text-red-600 text-center mb-4">
-                                    {errorMsg}
+                                    {errorMsg || "An Error has happen"}
                                 </div>
                             )}
 
