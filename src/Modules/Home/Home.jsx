@@ -7,14 +7,13 @@ import Table from '../../Components/Table';
 import { useSelector } from 'react-redux';
 
 export default function Home() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const { allUsers, loading, error } = useSelector(state => state.user) ; 
  
   return <>
     <div className='min-h-screen flex'>
       
      
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-25 mt-10 h-10 sm:gap-4 mb-3 sm:mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3  mt-10   sm:gap-4 mb-3 sm:mb-4">
         <div className="bg-[#3c8dad] text-white rounded-lg  shadow-lg flex flex-col items-center p-4 sm:p-8">
           <div className="text-xl sm:text-2xl">
             <svg

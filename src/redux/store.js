@@ -2,10 +2,12 @@ import { configureStore } from "@reduxjs/toolkit";
 import { Navigate } from "react-router-dom";
 import authReducer from "../redux/slices/AuthSlices/AuthReducer.jsx";
 import userReducer from "../redux/slices/UserSlices/UserReducer";
+import productReducer from "../redux/slices/ProductSlice/Products.jsx";
 const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,
+    product: productReducer,
   },
 });
 // (function initalizedAuth(){

@@ -21,6 +21,9 @@ import TextField from '@mui/material/TextField';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import logo from '../../assets/WhatsApp Image 2025-04-17 at 15.34.26_678dceb0.jpg'
+import { getallproducts } from '../../Apis/ProductsApi/Products';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 export default function Products() {
   const theme = useTheme();
@@ -33,7 +36,12 @@ export default function Products() {
     population: '', 
     size: '' 
   });
-
+  const dispatch = useDispatch();
+  const {allProducts} = useSelector((state) => state.product);
+useEffect(() => {
+    dispatch(getallproducts());
+  }, [dispatch]);
+ console.log('products',allProducts );
   const columns = [
     { 
       id: 'logo', 

@@ -21,7 +21,7 @@ export default function Login() {
         onSubmit: async (values) => {
             try {
                 const result = await dispatch(loginUser(values)).unwrap();
-                if(result.user.role==="user"){
+                if(result.user.role==="admin"){
                     navigate('/home')
                 }else {
                     setErrorMsg("You are not authorized to access the admin area.");
@@ -93,6 +93,7 @@ export default function Login() {
                             {errorMsg && (
                                 <div className="alert text-red-600 text-center mb-4">
                                     {errorMsg || "An Error has happen"}
+                                   
                                 </div>
                             )}
 

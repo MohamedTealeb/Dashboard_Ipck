@@ -93,7 +93,7 @@ export default function Sidebar({ onSidebarChange }) {
     // Close drawer by default on mobile
     if (isMobile) {
       setOpen(false);
-      onSidebarChange(false);
+      onSidebarChange(true);
     }
   }, [isMobile, onSidebarChange]);
 
