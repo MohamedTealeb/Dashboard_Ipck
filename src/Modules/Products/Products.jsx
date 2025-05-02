@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { MdDelete } from "react-icons/md";
@@ -23,12 +22,14 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  useMediaQuery,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import { tableCellClasses } from "@mui/material/TableCell";
 import { getAllCategories } from "../../Apis/CategoryApi/CategoryApi";
 import { getallproducts } from "../../Apis/ProductsApi/Products";
 import { toast } from "react-hot-toast";
+import { useEffect, useState } from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -53,6 +54,8 @@ export default function Products() {
   const dispatch = useDispatch();
   const { allProducts, loading, error } = useSelector((state) => state.product);
   const { allCategories } = useSelector((state) => state.category);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [openForm, setOpenForm] = useState(false);
   const [editProductId, setEditProductId] = useState(null);
@@ -163,11 +166,6 @@ export default function Products() {
       data.append("category", formData.category);
       if (imageFile) data.append("imageCover", imageFile);
 
-      console.log("FormData entries:");
-      for (let [key, value] of data.entries()) {
-        console.log(`${key}:`, value);
-      }
-
       await axios[method](url, data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -181,7 +179,6 @@ export default function Products() {
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Failed to submit product";
       toast.error(errorMessage);
-      console.error("Submit error:", err.response?.data);
     }
   };
 
@@ -196,7 +193,6 @@ export default function Products() {
       dispatch(getallproducts());
     } catch (err) {
       toast.error("Failed to delete product");
-      console.error("Delete error:", err.response?.data);
     } finally {
       handleCloseDeleteDialog();
     }
@@ -208,11 +204,7 @@ export default function Products() {
   }, [dispatch]);
 
   return (
-    <Box className="min-h-screen flex flex-col p-4 sm:p-6">
-      <Typography variant="h4" className="mb-6 font-bold text-gray-800">
-        Products
-      </Typography>
-
+    <Box className="min-h-screen flex flex-col p-4 sm:p-6 mt-10 space-y-4">
       <Button variant="contained" color="primary" onClick={() => handleOpenForm()}>
         Add New Product
       </Button>
@@ -229,8 +221,8 @@ export default function Products() {
       )}
 
       {!loading && !error && (
-        <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-          <Table sx={{ minWidth: 1150 }} aria-label="products table">
+        <TableContainer component={Paper} sx={{ overflowX: isMobile ? "auto" : "visible" }}>
+          <Table className="min-w-[600px]" size={isMobile ? "small" : "medium"}>
             <TableHead>
               <TableRow>
                 <StyledTableCell>Name</StyledTableCell>
@@ -255,7 +247,6 @@ export default function Products() {
                         src={`${import.meta.env.VITE_IMAGEURL}/${product.imageCover}`}
                         alt={product.name}
                         className="w-16 h-16 object-cover rounded"
-                        loading="lazy"
                       />
                     ) : (
                       "N/A"
@@ -277,72 +268,18 @@ export default function Products() {
         </TableContainer>
       )}
 
-      <Dialog
-        open={openForm}
-        onClose={handleCloseForm}
-        fullWidth
-        maxWidth="sm"
-        disableRestoreFocus
-        disablePortal
-      >
+      {/* Form Dialog */}
+      <Dialog open={openForm} onClose={handleCloseForm} fullWidth maxWidth="sm">
         <DialogTitle>{editProductId ? "Edit Product" : "Add Product"}</DialogTitle>
         <DialogContent>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Name"
-            name="name"
-            value={formData.name}
-            onChange={handleFormChange}
-            required
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Description"
-            name="description"
-            value={formData.description}
-            onChange={handleFormChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Price"
-            name="price"
-            type="number"
-            value={formData.price}
-            onChange={handleFormChange}
-            required
-            inputProps={{ step: "0.01" }}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Model"
-            name="model"
-            value={formData.model}
-            onChange={handleFormChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Stock"
-            name="stock"
-            type="number"
-            value={formData.stock}
-            onChange={handleFormChange}
-            required
-          />
+          <TextField fullWidth margin="normal" label="Name" name="name" value={formData.name} onChange={handleFormChange} required />
+          <TextField fullWidth margin="normal" label="Description" name="description" value={formData.description} onChange={handleFormChange} />
+          <TextField fullWidth margin="normal" label="Price" name="price" type="number" value={formData.price} onChange={handleFormChange} required inputProps={{ step: "0.01" }} />
+          <TextField fullWidth margin="normal" label="Model" name="model" value={formData.model} onChange={handleFormChange} />
+          <TextField fullWidth margin="normal" label="Stock" name="stock" type="number" value={formData.stock} onChange={handleFormChange} required />
           <FormControl fullWidth margin="normal">
             <InputLabel id="category-label">Category</InputLabel>
-            <Select
-              labelId="category-label"
-              name="category"
-              value={formData.category}
-              onChange={handleFormChange}
-              label="Category"
-              required
-            >
+            <Select labelId="category-label" name="category" value={formData.category} onChange={handleFormChange} label="Category" required>
               {allCategories.map((cat) => (
                 <MenuItem key={cat._id} value={cat._id}>
                   {cat.name}
@@ -351,9 +288,7 @@ export default function Products() {
             </Select>
           </FormControl>
           <FormControl fullWidth margin="normal">
-            <InputLabel shrink htmlFor="imageCover">
-              Image Cover
-            </InputLabel>
+            <InputLabel shrink htmlFor="imageCover">Image Cover</InputLabel>
             <input
               type="file"
               id="imageCover"
@@ -361,17 +296,12 @@ export default function Products() {
               accept="image/jpeg,image/png,image/jpg"
               onChange={handleImageChange}
               className="mt-2"
-              aria-label="Upload product image"
             />
           </FormControl>
           {imagePreview && (
-            <Box className="mt-4">
+            <Box mt={2}>
               <Typography variant="body2">Image Preview:</Typography>
-              <img
-                src={imagePreview}
-                alt="Product preview"
-                className="w-32 h-32 object-cover rounded mt-2"
-              />
+              <img src={imagePreview} alt="Product preview" className="w-32 h-32 object-cover rounded mt-2" />
             </Box>
           )}
         </DialogContent>
@@ -383,12 +313,9 @@ export default function Products() {
         </DialogActions>
       </Dialog>
 
-      <Dialog
-        open={openDeleteDialog}
-        onClose={handleCloseDeleteDialog}
-        aria-labelledby="delete-dialog-title"
-      >
-        <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
+      {/* Delete Dialog */}
+      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
+        <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           <Typography>Are you sure you want to delete this product? This action cannot be undone.</Typography>
         </DialogContent>

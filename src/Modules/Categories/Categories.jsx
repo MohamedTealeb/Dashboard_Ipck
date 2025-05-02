@@ -147,10 +147,8 @@ export default function Categories() {
   }, [dispatch]);
 
   return (
-    <Box className="min-h-screen w-full flex flex-col p-4 sm:p-6">
-      <Typography variant="h4" className="mb-6 font-bold text-gray-800">
-        Categories
-      </Typography>
+    <Box className="min-h-screen w-full flex flex-col p-4 mt-10 sm:p-6">
+      
 
       <Button variant="contained" color="primary" onClick={() => handleOpenForm()} sx={{ mb: 4 }}>
         Add New Category

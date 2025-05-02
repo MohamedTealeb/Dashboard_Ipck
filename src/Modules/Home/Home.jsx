@@ -16,14 +16,8 @@ const Dashboard = () => {
   }, [dispatch]);
 
   return (
-    <Box className="min-h-screen flex flex-col p-4 sm:p-6">
-      <Typography
-        variant="h4"
-        component="h1"
-        className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6"
-      >
-        Dashboard
-      </Typography>
+    <Box className="min-h-screen flex flex-col p-4 mt-10 sm:p-6">
+     
 
       {error && (
         <Typography color="error" className="mb-4">
