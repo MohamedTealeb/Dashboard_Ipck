@@ -10,74 +10,72 @@ import { Toaster } from "react-hot-toast";
 import { Box } from "@mui/material";
 import Categories from "./Modules/Categories/Categories";
 import ProtectedRoute from "./ProtectedRoutes/ProtectedRoutes";
+import SignUp from "./Modules/SignUp/SignUp";
 
 export default function App() {
-  
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
-  const noSidebarRoutes = ["/login"];
+  const noSidebarRoutes = ["/login", "/signup"];
   const isSidebarVisible = !noSidebarRoutes.includes(location.pathname);
 
-
   return (
-    
     <>
-    
       <Toaster />
-      {isSidebarVisible ?(
-          <Box sx={{ display: 'flex', width: '100%', overflowX: 'auto' }}>
-             <Sidebar open={open} setOpen={setOpen} />
-             <Routes>
-        
-               <Route path="home" element={
-                
-                 <ProtectedRoute>
-                   <Home />
-                  </ProtectedRoute>
-
-                
-                } />
-               <Route path="products" element={
-                
+      {isSidebarVisible ? (
+        <Box sx={{ display: 'flex', width: '100%', overflowX: 'auto' }}>
+          <Sidebar open={open} setOpen={setOpen} />
+          <Routes>
+            <Route
+              path="home"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="products"
+              element={
                 <ProtectedRoute>
                   <Products />
-                  </ProtectedRoute>
-                
-                  } />
-               <Route path="admin" element={
-                     <ProtectedRoute>
-                       <Admin />
-                  </ProtectedRoute>
-                
-                } />
-       
-               <Route path="verify" element={
-                     <ProtectedRoute>
-                       <Verify />
-                  </ProtectedRoute>
-              } 
-                />
-               <Route path="categories" element={
-                     <ProtectedRoute>
-                       <Categories />
-                  </ProtectedRoute>
-                
-                } />
-       
-             </Routes>
-             </Box>
-      ):(
-        // Fullscreen Layout for Login Page
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="admin"
+              element={
+                <ProtectedRoute>
+                  <Admin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="verify"
+              element={
+                <ProtectedRoute>
+                  <Verify />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="categories"
+              element={
+                <ProtectedRoute>
+                  <Categories />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Box>
+      ) : (
+        // Fullscreen Layout for Login and SignUp Pages
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       )}
-  
     </>
-  )
-      
-  
-  
+  );
 }
