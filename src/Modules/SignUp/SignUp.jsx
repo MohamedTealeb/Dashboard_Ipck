@@ -19,29 +19,28 @@ export default function SignUp() {
     },
     onSubmit: async (values) => {
       try {
-        const formData = new FormData();
-        formData.append('email', values.email);
-        formData.append('password', values.password);
-        formData.append('role', values.role);
-        formData.append('firstName', values.firstName);
-        formData.append('lastName', values.lastName);
-        formData.append('phone', values.phone);
-
-        const response = await axios.post(`${import.meta.env.VITE_BASEURL}/auth/signup`, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-
-           
-        });
+        const response = await axios.post(
+          `${import.meta.env.VITE_BASEURL}/auth/signup`,
+          values,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
 
         navigate('/login');
       } catch (error) {
-        setErrorMsg(error.response?.data?.message || 'Registration failed. Please try again.');
+        console.log(error.response?.data);
+        setErrorMsg(
+          error.response?.data?.message || 'Registration failed. Please try again.'
+        );
       }
     },
     validate: (values) => {
       let errors = {};
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const phonePattern = /^(?:\+20|01)(0|1|2|5|7|8|9)([- ]?\d{4}){2}$/;
+      const phonePattern = /^(?:\+20|01)[0-9]{9}$/;
 
       if (!values.email) {
         errors.email = 'Email is required.';
@@ -70,7 +69,8 @@ export default function SignUp() {
       if (!values.phone) {
         errors.phone = 'Phone number is required.';
       } else if (!phonePattern.test(values.phone)) {
-        errors.phone = 'Phone number must be a valid Egyptian number (e.g., +201234567890 or 012-345-6789).';
+        errors.phone =
+          'Phone number must be a valid Egyptian number (e.g., +201234567890 or 01234567890).';
       }
 
       return errors;
@@ -89,6 +89,7 @@ export default function SignUp() {
           />
           <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
             <div className="px-5 py-7">
+              {/* First Name */}
               <label className="font-semibold text-sm text-black pb-1 block">First Name</label>
               <input
                 type="text"
@@ -102,6 +103,7 @@ export default function SignUp() {
                 <div className="alert text-red-600 text-center mb-2">{formik.errors.firstName}</div>
               )}
 
+              {/* Last Name */}
               <label className="font-semibold text-sm text-black pb-1 block">Last Name</label>
               <input
                 type="text"
@@ -115,6 +117,7 @@ export default function SignUp() {
                 <div className="alert text-red-600 text-center mb-2">{formik.errors.lastName}</div>
               )}
 
+              {/* Email */}
               <label className="font-semibold text-sm text-black pb-1 block">E-mail</label>
               <input
                 type="email"
@@ -128,6 +131,7 @@ export default function SignUp() {
                 <div className="alert text-red-600 text-center mb-2">{formik.errors.email}</div>
               )}
 
+              {/* Password */}
               <label className="font-semibold text-sm text-black pb-1 block">Password</label>
               <input
                 type="password"
@@ -141,6 +145,7 @@ export default function SignUp() {
                 <div className="alert text-red-600 text-center mb-2">{formik.errors.password}</div>
               )}
 
+              {/* Role */}
               <label className="font-semibold text-sm text-black pb-1 block">Role</label>
               <select
                 name="role"
@@ -158,6 +163,7 @@ export default function SignUp() {
                 <div className="alert text-red-600 text-center mb-2">{formik.errors.role}</div>
               )}
 
+              {/* Phone */}
               <label className="font-semibold text-sm text-black pb-1 block">Phone</label>
               <input
                 type="text"
@@ -166,14 +172,16 @@ export default function SignUp() {
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 value={formik.values.phone}
-                placeholder="e.g., +201234567890 or 012-345-6789"
+                placeholder="e.g., +201234567890 or 01234567890"
               />
               {formik.errors.phone && formik.touched.phone && (
                 <div className="alert text-red-600 text-center mb-2">{formik.errors.phone}</div>
               )}
 
+              {/* Error Message */}
               {errorMsg && <div className="alert text-red-600 text-center mb-4">{errorMsg}</div>}
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 className="transition duration-200 bg-white text-black hover:cursor-pointer hover:bg-black focus:bg-black focus:shadow-sm focus:ring-4 focus:text-white focus:ring-black focus:ring-opacity-50 hover:text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block"
@@ -186,14 +194,11 @@ export default function SignUp() {
                   stroke="currentColor"
                   className="w-4 h-4 inline-block"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </button>
+
+              {/* Link to Login */}
               <div className="mt-4 text-center">
                 <span className="text-sm text-gray-600">Already have an account? </span>
                 <Link
