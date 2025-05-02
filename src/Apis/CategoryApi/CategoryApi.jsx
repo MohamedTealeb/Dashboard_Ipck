@@ -1,3 +1,6 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
 export const getAllCategories = createAsyncThunk(
   "category/getallcategories",
   async (params = {}, { rejectWithValue }) => {
@@ -11,7 +14,7 @@ export const getAllCategories = createAsyncThunk(
           },
         }
       );
- 
+
       return response.data;
     } catch (error) {
       console.log(error);

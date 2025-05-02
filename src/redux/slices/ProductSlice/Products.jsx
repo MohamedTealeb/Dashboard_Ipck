@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {  createSlice } from "@reduxjs/toolkit";
 import { getallproducts } from "../../../Apis/ProductsApi/Products";
 
 const producSlice = createSlice({
@@ -17,7 +17,7 @@ const producSlice = createSlice({
       })
       .addCase(getallproducts.fulfilled, (state, action) => {
         state.loading = false;
-        // console.log(action.payload, "all products");
+        console.log(action.payload, "all products");
         
         state.allProducts = action.payload.products;
       })

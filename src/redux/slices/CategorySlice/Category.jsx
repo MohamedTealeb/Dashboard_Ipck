@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getAllCategories } from "../../../Apis/CategoryApi/CategoryApi";
 
  const categorySlice = createSlice({
     name: "categorySlice",
@@ -10,15 +11,17 @@ import { createSlice } from "@reduxjs/toolkit";
     reducers:{},
     extraReducers: (builder) => {
         builder
-            .addCase("getallcategories/pending", (state) => {
+            .addCase(getAllCategories.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase("getallcategories/fulfilled", (state, action) => {
+            .addCase(getAllCategories.fulfilled, (state, action) => {
                 state.loading = false;
                 state.allCategories = action.payload.categories;
+                console.log("allCategories", action.payload);
+                
             })
-            .addCase("getallcategories/rejected", (state, action) => {
+            .addCase(getAllCategories.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

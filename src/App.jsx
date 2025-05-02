@@ -8,6 +8,7 @@ import Verify from "./Modules/Verfiy/Verify";
 import Sidebar from "./Components/Shared/Sidebar";
 import { Toaster } from "react-hot-toast";
 import { Box } from "@mui/material";
+import Categories from "./Modules/Categories/Categories";
 
 export default function App() {
   
@@ -33,6 +34,7 @@ export default function App() {
                <Route path="admin" element={<Admin />} />
        
                <Route path="verify" element={<Verify />} />
+               <Route path="categories" element={<Categories />} />
        
              </Routes>
              </Box>

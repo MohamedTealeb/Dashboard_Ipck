@@ -22,6 +22,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import PeopleIcon from '@mui/icons-material/People';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import CategoryIcon from '@mui/icons-material/Category';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -77,9 +78,11 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 const menuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/home' },
   { text: 'Products', icon: <InventoryIcon />, path: '/products' },
+  { text: 'Categories', icon: <CategoryIcon />, path: '/categories' },
   { text: 'Admin', icon: <AdminPanelSettingsIcon />, path: '/admin' },
   
   { text: 'Verify', icon: <VerifiedUserIcon />, path: '/verify' },
+
 ];
 
 export default function Sidebar({ onSidebarChange }) {
