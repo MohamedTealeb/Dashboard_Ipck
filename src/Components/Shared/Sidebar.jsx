@@ -1,5 +1,4 @@
 
-// }
 import * as React from 'react';
 import logo from '../../assets/304305481_470478301760187_6739104333513463181_n.jpg';
 import { styled, useTheme } from '@mui/material/styles';
