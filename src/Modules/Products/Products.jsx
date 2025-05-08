@@ -59,6 +59,9 @@ export default function Products() {
 
   const [openForm, setOpenForm] = useState(false);
   const [editProductId, setEditProductId] = useState(null);
+  const [additionalImages, setAdditionalImages] = useState([]);
+  const [additionalPreviews, setAdditionalPreviews] = useState([]);
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -81,6 +84,23 @@ export default function Products() {
     setOpenDeleteDialog(false);
     setSelectedProductId(null);
   };
+  const handleAdditionalImagesChange = (e) => {
+    const files = Array.from(e.target.files);
+    const validFiles = files.filter(
+      (file) =>
+        ["image/jpeg", "image/png", "image/jpg"].includes(file.type) &&
+        file.size <= 5 * 1024 * 1024
+    );
+
+    if (validFiles.length !== files.length) {
+      toast.error("Only JPEG/PNG/JPG images under 5MB are allowed");
+    }
+
+    setAdditionalImages(validFiles);
+
+    const previews = validFiles.map((file) => URL.createObjectURL(file));
+    setAdditionalPreviews(previews);
+  };
 
   const handleOpenForm = (product = null) => {
     if (product) {
@@ -92,7 +112,11 @@ export default function Products() {
         stock: product.stock !== undefined ? product.stock.toString() : "",
         category: product.category || "",
       });
-      setImagePreview(product.imageCover ? `${import.meta.env.VITE_IMAGEURL}/${product.imageCover}` : null);
+      setImagePreview(
+        product.imageCover
+          ? `${import.meta.env.VITE_IMAGEURL}/${product.imageCover}`
+          : null
+      );
       setEditProductId(product._id);
     } else {
       setFormData({
@@ -115,6 +139,8 @@ export default function Products() {
     setEditProductId(null);
     setImageFile(null);
     setImagePreview(null);
+    setAdditionalImages([]);
+    setAdditionalPreviews([]);
   };
 
   const handleFormChange = (e) => {
@@ -143,7 +169,12 @@ export default function Products() {
 
   const handleFormSubmit = async () => {
     try {
-      if (!formData.name || !formData.price || !formData.stock || !formData.category) {
+      if (
+        !formData.name ||
+        !formData.price ||
+        !formData.stock ||
+        !formData.category
+      ) {
         toast.error("Name, price, stock, and category are required");
         return;
       }
@@ -165,6 +196,8 @@ export default function Products() {
       data.append("stock", parseInt(formData.stock, 10));
       data.append("category", formData.category);
       if (imageFile) data.append("imageCover", imageFile);
+      additionalImages.forEach((img) => data.append("images", img));
+      
 
       await axios[method](url, data, {
         headers: {
@@ -173,22 +206,32 @@ export default function Products() {
         },
       });
 
-      toast.success(editProductId ? "Product updated successfully" : "Product added successfully");
+      toast.success(
+        editProductId
+          ? "Product updated successfully"
+          : "Product added successfully"
+      );
       handleCloseForm();
       dispatch(getallproducts());
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "Failed to submit product";
+      const errorMessage =
+        err.response?.data?.message || "Failed to submit product";
+        console.log(err);
+        
       toast.error(errorMessage);
     }
   };
 
   const handleDeleteProduct = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_BASEURL}/products/${selectedProductId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await axios.delete(
+        `${import.meta.env.VITE_BASEURL}/products/${selectedProductId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       toast.success("Product deleted successfully");
       dispatch(getallproducts());
     } catch (err) {
@@ -205,10 +248,28 @@ export default function Products() {
 
   return (
     <Box className="min-h-screen flex flex-col p-4 sm:p-6 mt-10 space-y-4">
-      <Button variant="contained" color="primary" onClick={() => handleOpenForm()}>
-        Add New Product
-      </Button>
-
+      <div className="flex justify-between items-center">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleOpenForm()}
+        >
+          Add New Product
+        </Button>
+        <select
+          className="ml-4 border rounded p-2 outline-none cursor-pointer"
+          onChange={(e) =>
+            dispatch(getallproducts({ category: e.target.value }))
+          }
+        >
+          <option value="">كل الفئات</option>
+          {allCategories.map((category) => (
+            <option key={category._id} value={category._id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+      </div>
       {loading && (
         <Box className="flex justify-center mt-4">
           <CircularProgress />
@@ -221,7 +282,10 @@ export default function Products() {
       )}
 
       {!loading && !error && (
-        <TableContainer component={Paper} sx={{ overflowX: isMobile ? "auto" : "visible" }}>
+        <TableContainer
+          component={Paper}
+          sx={{ overflowX: isMobile ? "auto" : "visible" }}
+        >
           <Table className="min-w-[600px]" size={isMobile ? "small" : "medium"}>
             <TableHead>
               <TableRow>
@@ -238,13 +302,19 @@ export default function Products() {
               {allProducts.map((product) => (
                 <StyledTableRow key={product._id}>
                   <StyledTableCell>{product.name}</StyledTableCell>
-                  <StyledTableCell>{product.description || "N/A"}</StyledTableCell>
-                  <StyledTableCell align="right">${product.price.toFixed(2)}</StyledTableCell>
+                  <StyledTableCell>
+                    {product.description || "N/A"}
+                  </StyledTableCell>
+                  <StyledTableCell align="right">
+                    ${product.price.toFixed(2)}
+                  </StyledTableCell>
                   <StyledTableCell>{product.model || "N/A"}</StyledTableCell>
                   <StyledTableCell>
                     {product.imageCover ? (
                       <img
-                        src={`${import.meta.env.VITE_IMAGEURL}/${product.imageCover}`}
+                        src={`${import.meta.env.VITE_IMAGEURL}/${
+                          product.imageCover
+                        }`}
                         alt={product.name}
                         className="w-16 h-16 object-cover rounded"
                       />
@@ -252,12 +322,20 @@ export default function Products() {
                       "N/A"
                     )}
                   </StyledTableCell>
-                  <StyledTableCell align="right">{product.stock}</StyledTableCell>
+                  <StyledTableCell align="right">
+                    {product.stock}
+                  </StyledTableCell>
                   <StyledTableCell>
-                    <Button variant="outlined" onClick={() => handleOpenForm(product)}>
+                    <Button
+                      variant="outlined"
+                      onClick={() => handleOpenForm(product)}
+                    >
                       Edit
                     </Button>
-                    <Button color="error" onClick={() => handleOpenDeleteDialog(product._id)}>
+                    <Button
+                      color="error"
+                      onClick={() => handleOpenDeleteDialog(product._id)}
+                    >
                       <MdDelete size={20} />
                     </Button>
                   </StyledTableCell>
@@ -270,16 +348,66 @@ export default function Products() {
 
       {/* Form Dialog */}
       <Dialog open={openForm} onClose={handleCloseForm} fullWidth maxWidth="sm">
-        <DialogTitle>{editProductId ? "Edit Product" : "Add Product"}</DialogTitle>
+        <DialogTitle>
+          {editProductId ? "Edit Product" : "Add Product"}
+        </DialogTitle>
         <DialogContent>
-          <TextField fullWidth margin="normal" label="Name" name="name" value={formData.name} onChange={handleFormChange} required />
-          <TextField fullWidth margin="normal" label="Description" name="description" value={formData.description} onChange={handleFormChange} />
-          <TextField fullWidth margin="normal" label="Price" name="price" type="number" value={formData.price} onChange={handleFormChange} required inputProps={{ step: "0.01" }} />
-          <TextField fullWidth margin="normal" label="Model" name="model" value={formData.model} onChange={handleFormChange} />
-          <TextField fullWidth margin="normal" label="Stock" name="stock" type="number" value={formData.stock} onChange={handleFormChange} required />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Name"
+            name="name"
+            value={formData.name}
+            onChange={handleFormChange}
+            required
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Description"
+            name="description"
+            value={formData.description}
+            onChange={handleFormChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Price"
+            name="price"
+            type="number"
+            value={formData.price}
+            onChange={handleFormChange}
+            required
+            inputProps={{ step: "0.01" }}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Model"
+            name="model"
+            value={formData.model}
+            onChange={handleFormChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Stock"
+            name="stock"
+            type="number"
+            value={formData.stock}
+            onChange={handleFormChange}
+            required
+          />
           <FormControl fullWidth margin="normal">
             <InputLabel id="category-label">Category</InputLabel>
-            <Select labelId="category-label" name="category" value={formData.category} onChange={handleFormChange} label="Category" required>
+            <Select
+              labelId="category-label"
+              name="category"
+              value={formData.category}
+              onChange={handleFormChange}
+              label="Category"
+              required
+            >
               {allCategories.map((cat) => (
                 <MenuItem key={cat._id} value={cat._id}>
                   {cat.name}
@@ -288,7 +416,9 @@ export default function Products() {
             </Select>
           </FormControl>
           <FormControl fullWidth margin="normal">
-            <InputLabel shrink htmlFor="imageCover">Image Cover</InputLabel>
+            <InputLabel shrink htmlFor="imageCover">
+              Image Cover
+            </InputLabel>
             <input
               type="file"
               id="imageCover"
@@ -298,10 +428,45 @@ export default function Products() {
               className="mt-2"
             />
           </FormControl>
+          <FormControl fullWidth margin="normal">
+            <InputLabel shrink htmlFor="images">
+              Additional Images
+            </InputLabel>
+            <input
+              type="file"
+              id="images"
+              name="images"
+              accept="image/jpeg,image/png,image/jpg"
+              multiple
+              onChange={handleAdditionalImagesChange}
+              className="mt-2"
+            />
+          </FormControl>
+          {additionalPreviews.length > 0 && (
+            <Box mt={2}>
+              <Typography variant="body2">
+                Additional Images Preview:
+              </Typography>
+              <Box className="flex flex-wrap gap-2 mt-2">
+                {additionalPreviews.map((src, idx) => (
+                  <img
+                    key={idx}
+                    src={src}
+                    alt={`Preview ${idx}`}
+                    className="w-20 h-20 object-cover rounded"
+                  />
+                ))}
+              </Box>
+            </Box>
+          )}
           {imagePreview && (
             <Box mt={2}>
               <Typography variant="body2">Image Preview:</Typography>
-              <img src={imagePreview} alt="Product preview" className="w-32 h-32 object-cover rounded mt-2" />
+              <img
+                src={imagePreview}
+                alt="Product preview"
+                className="w-32 h-32 object-cover rounded mt-2"
+              />
             </Box>
           )}
         </DialogContent>
@@ -317,11 +482,18 @@ export default function Products() {
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
-          <Typography>Are you sure you want to delete this product? This action cannot be undone.</Typography>
+          <Typography>
+            Are you sure you want to delete this product? This action cannot be
+            undone.
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
-          <Button color="error" variant="contained" onClick={handleDeleteProduct}>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={handleDeleteProduct}
+          >
             Delete
           </Button>
         </DialogActions>
