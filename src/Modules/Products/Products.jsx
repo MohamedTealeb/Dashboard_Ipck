@@ -363,14 +363,26 @@ data.append("model", formData.model); // Assuming model is a string
             onChange={handleFormChange}
             required
           />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Description"
-            name="description"
-            value={formData.description}
-            onChange={handleFormChange}
-          />
+        <div style={{ marginTop: '1rem', width: '100%' }}>
+  <label htmlFor="description" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+    Description
+  </label>
+  <textarea
+    id="description"
+    name="description"
+    value={formData.description}
+    onChange={handleFormChange}
+    rows={4}
+    style={{
+      width: '100%',
+      padding: '0.75rem',
+      borderRadius: '4px',
+      border: '1px solid #ccc',
+      fontSize: '1rem',
+      resize: 'vertical',
+    }}
+  />
+</div>
           <TextField
             fullWidth
             margin="normal"

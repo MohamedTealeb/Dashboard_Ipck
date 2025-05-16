@@ -29,17 +29,26 @@ import {
         <DialogTitle>{isEdit ? "Edit Product" : "Add Product"}</DialogTitle>
         <DialogContent>
           <TextField fullWidth margin="normal" label="Name" name="name" value={formData.name} onChange={onFormChange} required />
-<TextField
-  fullWidth
-  margin="normal"
-  label="Description"
-  name="description"
-  value={formData.description}
-  onChange={onFormChange}
-  multiline
-  minRows={3}
-  maxRows={10} 
-/>
+<div style={{ marginTop: '1rem', width: '100%' }}>
+  <label htmlFor="description" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+    Description
+  </label>
+  <textarea
+    id="description"
+    name="description"
+    value={formData.description}
+    onChange={onFormChange}
+    rows={4}
+    style={{
+      width: '100%',
+      padding: '0.75rem',
+      borderRadius: '4px',
+      border: '1px solid #ccc',
+      fontSize: '1rem',
+      resize: 'vertical',
+    }}
+  />
+</div>
 
           <TextField fullWidth margin="normal" label="Price" name="price" type="number" value={formData.price} onChange={onFormChange}  inputProps={{ step: "0.01" }} />
           <TextField fullWidth margin="normal" label="Model" name="model" value={formData.model} onChange={onFormChange} />
