@@ -12,6 +12,9 @@ import { Box } from "@mui/material";
 import Categories from "./Modules/Categories/Categories";
 import ProtectedRoute from "./ProtectedRoutes/ProtectedRoutes";
 import SignUp from "./Modules/SignUp/SignUp";
+import { Helmet } from "react-helmet";
+import logo from '../src/assets/304305481_470478301760187_6739104333513463181_n.jpg';
+
 
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -22,6 +25,11 @@ export default function App() {
 
   return (
     <>
+    <Helmet>
+      <title>ipek</title>
+  <meta property="og:image" content={logo} />
+   <meta property="og:description" content="Welcome to Ipek's dashboard" />
+</Helmet>
       <Toaster />
       {isSidebarVisible ? (
         <Box sx={{ display: "flex", width: "100%" }}>
