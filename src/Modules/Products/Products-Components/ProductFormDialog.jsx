@@ -29,7 +29,18 @@ import {
         <DialogTitle>{isEdit ? "Edit Product" : "Add Product"}</DialogTitle>
         <DialogContent>
           <TextField fullWidth margin="normal" label="Name" name="name" value={formData.name} onChange={onFormChange} required />
-          <TextField fullWidth margin="normal" label="Description" name="description" value={formData.description} onChange={onFormChange} />
+<TextField
+  fullWidth
+  margin="normal"
+  label="Description"
+  name="description"
+  value={formData.description}
+  onChange={onFormChange}
+  multiline
+  minRows={3}
+  maxRows={10} 
+/>
+
           <TextField fullWidth margin="normal" label="Price" name="price" type="number" value={formData.price} onChange={onFormChange}  inputProps={{ step: "0.01" }} />
           <TextField fullWidth margin="normal" label="Model" name="model" value={formData.model} onChange={onFormChange} />
           <TextField fullWidth margin="normal" label="Stock" name="stock" type="number" value={formData.stock} onChange={onFormChange} />
