@@ -170,12 +170,9 @@ export default function Products() {
   const handleFormSubmit = async () => {
     try {
       if (
-        !formData.name ||
-        !formData.price ||
-        !formData.stock ||
-        !formData.category
+        !formData.name ||!formData.category
       ) {
-        toast.error("Name, price, stock, and category are required");
+        toast.error("Name  and category are required");
         return;
       }
       if (!editProductId && !imageFile) {
@@ -191,9 +188,15 @@ export default function Products() {
       const data = new FormData();
       data.append("name", formData.name);
       data.append("description", formData.description || "");
-      data.append("price", parseFloat(formData.price));
-      data.append("model", formData.model || "");
-      data.append("stock", parseInt(formData.stock, 10));
+     if (formData.price) {
+  data.append("price", parseFloat(formData.price));
+}
+if (formData.stock) {
+  data.append("stock", parseInt(formData.stock, 10));
+}
+data.append("model", formData.model); // Assuming model is a string
+
+
       data.append("category", formData.category);
       if (imageFile) data.append("imageCover", imageFile);
       additionalImages.forEach((img) => data.append("images", img));
@@ -298,50 +301,49 @@ export default function Products() {
                 <StyledTableCell>Actions</StyledTableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {allProducts.map((product) => (
-                <StyledTableRow key={product._id}>
-                  <StyledTableCell>{product.name}</StyledTableCell>
-                  <StyledTableCell>
-                    {product.description || "N/A"}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    ${product.price.toFixed(2)}
-                  </StyledTableCell>
-                  <StyledTableCell>{product.model || "N/A"}</StyledTableCell>
-                  <StyledTableCell>
-                    {product.imageCover ? (
-                      <img
-                        src={`${import.meta.env.VITE_IMAGEURL}/${
-                          product.imageCover
-                        }`}
-                        alt={product.name}
-                        className="w-16 h-16 object-cover rounded"
-                      />
-                    ) : (
-                      "N/A"
-                    )}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    {product.stock}
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <Button
-                      variant="outlined"
-                      onClick={() => handleOpenForm(product)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      color="error"
-                      onClick={() => handleOpenDeleteDialog(product._id)}
-                    >
-                      <MdDelete size={20} />
-                    </Button>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
+           <TableBody>
+  {allProducts.map((product) => (
+    <StyledTableRow key={product._id}>
+      <StyledTableCell>{product.name}</StyledTableCell>
+      <StyledTableCell>
+        {product.description || "N/A"}
+      </StyledTableCell>
+      <StyledTableCell align="right">
+        ${Number.isFinite(product.price) ? product.price.toFixed(2) : "N/A"}
+      </StyledTableCell>
+      <StyledTableCell>{product.model || "N/A"}</StyledTableCell>
+      <StyledTableCell>
+        {product.imageCover ? (
+          <img
+            src={`${import.meta.env.VITE_IMAGEURL}/${product.imageCover}`}
+            alt={product.name}
+            className="w-16 h-16 object-cover rounded"
+          />
+        ) : (
+          "N/A"
+        )}
+      </StyledTableCell>
+      <StyledTableCell align="right">
+        {Number.isFinite(product.stock) ? product.stock : "N/A"}
+      </StyledTableCell>
+      <StyledTableCell>
+        <Button
+          variant="outlined"
+          onClick={() => handleOpenForm(product)}
+        >
+          Edit
+        </Button>
+        <Button
+          color="error"
+          onClick={() => handleOpenDeleteDialog(product._id)}
+        >
+          <MdDelete size={20} />
+        </Button>
+      </StyledTableCell>
+    </StyledTableRow>
+  ))}
+</TableBody>
+
           </Table>
         </TableContainer>
       )}
